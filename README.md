@@ -1,2 +1,2 @@
-# graphal
-A JavaScript framework to build GraphQL applications
+# Graphwork
+A framework to build GraphQL applications
