@@ -2,7 +2,7 @@ import logger from '../logger';
 
 const greeting = () => {
   logger.info('greeting fetched.');
-  return 'Hello Graphwork!';
+  return 'Hello Graphal!';
 };
 
 module.exports = {
