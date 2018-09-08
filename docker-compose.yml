@@ -1,0 +1,11 @@
+version: '3'
+services:
+  api:
+    build:
+      context: ./api
+      args:
+        http_proxy: ${HTTP_PROXY}
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./api:/usr/src/app
