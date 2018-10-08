@@ -1,7 +1,9 @@
-import express from 'express';
-import helmet from 'helmet';
-import { ApolloServer } from 'apollo-server-express';
-import expressPlayground from 'graphql-playground-middleware-express';
+import Koa from 'koa';
+import helmet from 'koa-helmet';
+import { ApolloServer } from 'apollo-server-koa';
+import koaPlayground from 'graphql-playground-middleware-koa';
+import KoaRouter from 'koa-router';
+import koaBody from 'koa-body';
 import config from './config';
 import typeDefs from './schema';
 import logger from './logger';
@@ -15,7 +17,8 @@ const cors = {
   allowedHeaders: ['Content-Type', 'Authorization', 'x-xsrf-token'],
 };
 
-const app = express();
+const app = new Koa();
+const router = new KoaRouter();
 app.use(helmet());
 
 const resolvers = {
@@ -27,10 +30,19 @@ const server = new ApolloServer({
   resolvers,
 });
 
+router.all(
+  '/playground',
+  koaPlayground({
+    endpoint: config.graphqlPath,
+  }),
+);
+
+app.use(koaBody());
 server.applyMiddleware({ app, cors, path: config.graphqlPath });
-app.get('/playground', expressPlayground({ endpoint: config.graphqlPath }));
+app.use(router.routes());
+app.use(router.allowedMethods());
 
 app.listen({ port: config.port }, () => {
-  logger.info(`Server is running on http://localhost:${config.port}`);
-  logger.info(`Visit GraphQL playgound on http://localhost:${config.port}/playground`);
+  logger.info(`🚀 Server is running on http://localhost:${config.port}`);
+  logger.info(`🚀 Visit GraphQL playgound on http://localhost:${config.port}/playground`);
 });
